@@ -25,7 +25,7 @@ AnsiblePullCmd = "/usr/bin/ansible-pull -U {} {}.yml -i localhost".format(Github
 
 t = Template()
 
-t.add_description("Effective DevOps in AWS: HelloWorld web application")
+t.set_description("Effective DevOps in AWS: HelloWorld web application")
 
 t.add_parameter(Parameter(
     "KeyPair",
@@ -54,10 +54,11 @@ t.add_resource(ec2.SecurityGroup(
 ))
 
 ud = Base64(Join('\n', [ "#!/bin/bash",
-"yum install -y git", 
-"yum install -y ansible",
+"sudo yum -y install ansible",
 AnsiblePullCmd,
-"echo '*/10 * * * * {}' > /etc/cron.d/ansible-pull".format(AnsiblePullCmd)
+"echo '*/10 * * * * {}' > /etc/cron.d/ansible-pull".format(AnsiblePullCmd),
+"sudo systemctl enable helloworld.service",
+"sudo systemctl start helloworld.service",
 ]))
 
 t.add_resource(ec2.Instance(
